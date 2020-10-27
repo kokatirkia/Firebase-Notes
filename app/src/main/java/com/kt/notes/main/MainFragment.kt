@@ -3,7 +3,6 @@ package com.kt.notes.main
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -34,7 +33,6 @@ class MainFragment : Fragment(), NotesRecAdapter.OnItemClickListener {
     ): View? {
         setHasOptionsMenu(true)
         _binding = MainFragmentBinding.inflate(inflater, container, false)
-        (requireActivity() as AppCompatActivity).supportActionBar?.show()
         return binding.root
     }
 

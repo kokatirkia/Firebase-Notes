@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -27,7 +26,6 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = LoginFragmentBinding.inflate(inflater, container, false)
-        (requireActivity() as AppCompatActivity).supportActionBar?.hide()
         return binding.root
     }
 
