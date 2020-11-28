@@ -1,5 +1,7 @@
 package com.kt.notes.di
 
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -21,4 +23,8 @@ class FirebaseModule {
     @Singleton
     @Provides
     fun provideFireBaseFirestore(): FirebaseFirestore = Firebase.firestore
+
+    @Singleton
+    @Provides
+    fun provideFireBaseAnalytics(): FirebaseAnalytics = Firebase.analytics
 }
