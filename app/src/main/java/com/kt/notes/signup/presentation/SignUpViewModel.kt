@@ -28,6 +28,10 @@ class SignUpViewModel @Inject constructor(
         _signUpState.value = _signUpState.value!!.copy(repeatedPassword = newValue)
     }
 
+    fun onNavigated() {
+        _signUpState.value = _signUpState.value!!.copy(navigateToNotes = false)
+    }
+
     fun onSignUpClicked() {
         _signUpState.value = _signUpState.value!!.copy(isLoading = true)
 
@@ -37,16 +41,16 @@ class SignUpViewModel @Inject constructor(
             _signUpState.value!!.repeatedPassword.isEmpty()
         ) {
             _signUpState.value = _signUpState.value!!.copy(
+                responseMessage = "Fill Fields",
                 isLoading = false,
-                isSignUpSuccessful = false,
-                responseMessage = "Fill Fields"
+                navigateToNotes = false
             )
             return
         } else if (_signUpState.value!!.password != _signUpState.value!!.repeatedPassword) {
             _signUpState.value = _signUpState.value!!.copy(
+                responseMessage = "password is not same",
                 isLoading = false,
-                isSignUpSuccessful = false,
-                responseMessage = "password is not same"
+                navigateToNotes = false
             )
             return
         }
@@ -56,15 +60,15 @@ class SignUpViewModel @Inject constructor(
         ).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 _signUpState.value = _signUpState.value!!.copy(
+                    responseMessage = "User created",
                     isLoading = false,
-                    isSignUpSuccessful = true,
-                    responseMessage = "User created"
+                    navigateToNotes = true
                 )
             } else {
                 _signUpState.value = _signUpState.value!!.copy(
+                    responseMessage = task.exception?.message ?: "Unknown failure",
                     isLoading = false,
-                    isSignUpSuccessful = false,
-                    responseMessage = task.exception?.message ?: "Unknown failure"
+                    navigateToNotes = false
                 )
             }
         }

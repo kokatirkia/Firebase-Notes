@@ -44,6 +44,7 @@ fun LoginScreen(
             navController.navigate(Screen.SignUp.route)
         },
         navigateToNotesScreen = {
+            loginViewModel.onNavigated()
             navController.navigate(Screen.Notes.route) {
                 popUpTo(Screen.Login.route) {
                     inclusive = true
@@ -63,7 +64,8 @@ private fun LoginScreen(
     navigateToSignUpScreen: () -> Unit,
     navigateToNotesScreen: () -> Unit,
 ) {
-    if (loginState.isLoginSuccessful) navigateToNotesScreen()
+    if (loginState.navigateToNotes) navigateToNotesScreen()
+
     val scaffoldState = rememberScaffoldState()
     NotesTheme {
         Scaffold(

@@ -42,6 +42,7 @@ fun SignUpScreen(
         onSignUpCLicked = { signUpViewModel.onSignUpClicked() },
         popBackStack = { navController.popBackStack() },
         navigateToNotesScreen = {
+            signUpViewModel.onNavigated()
             navController.navigate(Screen.Notes.route) {
                 popUpTo(Screen.SignUp.route) {
                     inclusive = true
@@ -62,7 +63,8 @@ fun SignUpScreen(
     popBackStack: () -> Unit,
     navigateToNotesScreen: () -> Unit
 ) {
-    if (signUpState.isSignUpSuccessful) navigateToNotesScreen()
+    if (signUpState.navigateToNotes) navigateToNotesScreen()
+
     val scaffoldState = rememberScaffoldState()
     NotesTheme {
         Scaffold(

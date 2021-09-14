@@ -24,14 +24,18 @@ class LoginViewModel @Inject constructor(
         _loginState.value = _loginState.value!!.copy(password = newValue)
     }
 
+    fun onNavigated() {
+        _loginState.value = _loginState.value!!.copy(navigateToNotes = false)
+    }
+
     fun onLoginClicked() {
         _loginState.value = _loginState.value!!.copy(isLoading = true)
 
         if (_loginState.value!!.userName.isEmpty() || _loginState.value!!.password.isEmpty()) {
             _loginState.value = _loginState.value!!.copy(
+                responseMessage = "Fill Fields",
                 isLoading = false,
-                isLoginSuccessful = false,
-                responseMessage = "Fill Fields"
+                navigateToNotes = false
             )
             return
         }
@@ -41,15 +45,15 @@ class LoginViewModel @Inject constructor(
         ).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 _loginState.value = _loginState.value!!.copy(
+                    responseMessage = "Login successful",
                     isLoading = false,
-                    isLoginSuccessful = true,
-                    responseMessage = "Login successful"
+                    navigateToNotes = true
                 )
             } else {
                 _loginState.value = _loginState.value!!.copy(
+                    responseMessage = task.exception?.message,
                     isLoading = false,
-                    isLoginSuccessful = false,
-                    responseMessage = task.exception?.message
+                    navigateToNotes = false
                 )
             }
         }
