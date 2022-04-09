@@ -1,8 +1,11 @@
 package com.kt.notes.signup.presentation
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -13,8 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -69,18 +74,6 @@ fun SignUpScreen(
     NotesTheme {
         Scaffold(
             scaffoldState = scaffoldState,
-            topBar = {
-                TopAppBar(
-                    backgroundColor = MaterialTheme.colors.primaryVariant,
-                    contentColor = Color.White,
-                    title = { Text(text = stringResource(R.string.sign_up)) },
-                    navigationIcon = {
-                        IconButton(onClick = popBackStack) {
-                            Icon(Icons.Filled.ArrowBack, contentDescription = null)
-                        }
-                    }
-                )
-            },
             content = {
                 SignUpBodyContent(
                     signUpState = signUpState,
@@ -88,7 +81,8 @@ fun SignUpScreen(
                     onUserNameChange = onUserNameChange,
                     onPasswordChange = onPasswordChange,
                     onRepeatedPasswordChange = onRepeatedPasswordChange,
-                    onSignUpCLicked = onSignUpCLicked
+                    onSignUpCLicked = onSignUpCLicked,
+                    popBackStack = popBackStack
                 )
             })
     }
@@ -102,58 +96,92 @@ fun SignUpBodyContent(
     onUserNameChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onRepeatedPasswordChange: (String) -> Unit,
-    onSignUpCLicked: () -> Unit
+    onSignUpCLicked: () -> Unit,
+    popBackStack: () -> Unit,
 ) {
     ShowSnackbar(signUpState.responseMessage, scaffoldState.snackbarHostState)
 
     if (signUpState.isLoading) {
         CircularProgress()
-    } else Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 30.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceEvenly
-    ) {
-        Image(
-            painterResource(R.drawable.ic_notes),
-            contentDescription = null,
-        )
-
-        AuthorisationTextField(
-            label = stringResource(R.string.username),
-            drawableId = R.drawable.ic_baseline_alternate_email_24,
-            keyBoardType = KeyboardType.Email,
-            value = signUpState.userName,
-            onValueChange = onUserNameChange
-        )
-        AuthorisationTextField(
-            label = stringResource(R.string.password),
-            drawableId = R.drawable.ic_baseline_lock_24,
-            keyBoardType = KeyboardType.Password,
-            value = signUpState.password,
-            onValueChange = onPasswordChange
-        )
-        AuthorisationTextField(
-            label = stringResource(R.string.repeated_password),
-            drawableId = R.drawable.ic_baseline_lock_24,
-            keyBoardType = KeyboardType.Password,
-            value = signUpState.repeatedPassword,
-            onValueChange = onRepeatedPasswordChange
-        )
-
-        Button(
-            onClick = onSignUpCLicked,
+    } else Column(Modifier.verticalScroll(rememberScrollState())) {
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(45.dp)
-                .clip(RoundedCornerShape(15.dp)),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.White,
-                contentColor = MaterialTheme.colors.primary
-            )
+                .height((LocalConfiguration.current.screenHeightDp / 3).dp)
+                .clip(shape = RoundedCornerShape(bottomEnd = 30.dp, bottomStart = 30.dp))
+                .background(color = MaterialTheme.colors.primaryVariant)
         ) {
-            Text(text = stringResource(R.string.sign_up), fontSize = 17.sp)
+            IconButton(
+                onClick = popBackStack,
+            ) {
+                Icon(
+                    Icons.Filled.ArrowBack,
+                    contentDescription = null,
+                    tint = Color.White,
+                )
+            }
+            Image(
+                painterResource(R.drawable.ic_notes),
+                contentDescription = null,
+                modifier = Modifier.align(alignment = Alignment.Center)
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colors.primary)
+                .padding(horizontal = 30.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                Spacer(Modifier.height(40.dp))
+                Text(
+                    text = stringResource(R.string.sign_up),
+                    color = Color.White,
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(Modifier.height(40.dp))
+                AuthorisationTextField(
+                    label = stringResource(R.string.username),
+                    drawableId = R.drawable.ic_baseline_alternate_email_24,
+                    keyBoardType = KeyboardType.Email,
+                    value = signUpState.userName,
+                    onValueChange = onUserNameChange
+                )
+                Spacer(Modifier.height(40.dp))
+                AuthorisationTextField(
+                    label = stringResource(R.string.password),
+                    drawableId = R.drawable.ic_baseline_lock_24,
+                    keyBoardType = KeyboardType.Password,
+                    value = signUpState.password,
+                    onValueChange = onPasswordChange
+                )
+                Spacer(Modifier.height(40.dp))
+                AuthorisationTextField(
+                    label = stringResource(R.string.repeated_password),
+                    drawableId = R.drawable.ic_baseline_lock_24,
+                    keyBoardType = KeyboardType.Password,
+                    value = signUpState.repeatedPassword,
+                    onValueChange = onRepeatedPasswordChange
+                )
+                Spacer(Modifier.height(40.dp))
+                Button(
+                    onClick = onSignUpCLicked,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .clip(RoundedCornerShape(15.dp)),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.White,
+                        contentColor = MaterialTheme.colors.primary
+                    )
+                ) {
+                    Text(text = stringResource(R.string.sign_up), fontSize = 17.sp)
+                }
+                Spacer(Modifier.height(40.dp))
+            }
         }
     }
 }

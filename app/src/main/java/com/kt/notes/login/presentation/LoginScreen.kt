@@ -1,9 +1,12 @@
 package com.kt.notes.login.presentation
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -12,10 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -70,13 +75,6 @@ private fun LoginScreen(
     NotesTheme {
         Scaffold(
             scaffoldState = scaffoldState,
-            topBar = {
-                TopAppBar(
-                    backgroundColor = MaterialTheme.colors.primaryVariant,
-                    contentColor = Color.White,
-                    title = { Text(text = stringResource(R.string.login)) },
-                )
-            },
             content = {
                 LoginBodyContent(
                     navigateToSignUpScreen = navigateToSignUpScreen,
@@ -104,60 +102,83 @@ fun LoginBodyContent(
 
     if (loginState.isLoading) {
         CircularProgress()
-    } else Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 30.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceEvenly
-    ) {
-        Image(
-            painterResource(R.drawable.ic_notes),
-            contentDescription = null
-        )
-
-        AuthorisationTextField(
-            label = stringResource(R.string.username),
-            drawableId = R.drawable.ic_baseline_alternate_email_24,
-            keyBoardType = KeyboardType.Email,
-            value = loginState.userName,
-            onValueChange = onUserNameChange
-        )
-        AuthorisationTextField(
-            label = stringResource(R.string.password),
-            drawableId = R.drawable.ic_baseline_lock_24,
-            keyBoardType = KeyboardType.Password,
-            value = loginState.password,
-            onValueChange = onPasswordChange
-        )
-
-        Button(
-            onClick = onLoginCLicked,
+    } else Column(Modifier.verticalScroll(rememberScrollState())) {
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(45.dp)
-                .clip(RoundedCornerShape(15.dp)),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.White,
-                contentColor = MaterialTheme.colors.primary
-            )
+                .height((LocalConfiguration.current.screenHeightDp / 3).dp)
+                .clip(shape = RoundedCornerShape(bottomEnd = 30.dp, bottomStart = 30.dp))
+                .background(color = MaterialTheme.colors.primaryVariant)
+                .wrapContentSize(align = Alignment.Center)
         ) {
-            Text(text = stringResource(R.string.login), fontSize = 20.sp)
+            Image(
+                painterResource(R.drawable.ic_notes),
+                contentDescription = null
+            )
         }
-
-        Row(
+        Box(
             modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+                .fillMaxSize()
+                .background(color = MaterialTheme.colors.primary)
+                .padding(horizontal = 30.dp)
         ) {
-            Text(text = stringResource(R.string.not_a_member), color = Color.White)
-            Spacer(Modifier.width(10.dp))
-            ClickableText(
-                text = AnnotatedString(stringResource(R.string.sign_up)),
-                style = TextStyle(color = Color.White, fontSize = 16.sp),
-                onClick = { navigateToSignUpScreen() }
-            )
+            Column(
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                Spacer(Modifier.height(40.dp))
+                Text(
+                    text = stringResource(R.string.login),
+                    color = Color.White,
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(Modifier.height(40.dp))
+                AuthorisationTextField(
+                    label = stringResource(R.string.username),
+                    drawableId = R.drawable.ic_baseline_alternate_email_24,
+                    keyBoardType = KeyboardType.Email,
+                    value = loginState.userName,
+                    onValueChange = onUserNameChange
+                )
+                Spacer(Modifier.height(40.dp))
+                AuthorisationTextField(
+                    label = stringResource(R.string.password),
+                    drawableId = R.drawable.ic_baseline_lock_24,
+                    keyBoardType = KeyboardType.Password,
+                    value = loginState.password,
+                    onValueChange = onPasswordChange
+                )
+                Spacer(Modifier.height(40.dp))
+                Button(
+                    onClick = onLoginCLicked,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .clip(RoundedCornerShape(15.dp)),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.White,
+                        contentColor = MaterialTheme.colors.primary
+                    )
+                ) {
+                    Text(text = stringResource(R.string.login), fontSize = 20.sp)
+                }
+                Spacer(Modifier.height(30.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(text = stringResource(R.string.not_a_member), color = Color.White)
+                    Spacer(Modifier.width(10.dp))
+                    ClickableText(
+                        text = AnnotatedString(stringResource(R.string.sign_up)),
+                        style = TextStyle(color = Color.White, fontSize = 16.sp),
+                        onClick = { navigateToSignUpScreen() }
+                    )
+                }
+                Spacer(Modifier.height(40.dp))
+            }
         }
     }
 }

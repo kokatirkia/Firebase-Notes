@@ -29,7 +29,7 @@ fun AuthorisationTextField(
             .fillMaxWidth(),
         value = value,
         onValueChange = onValueChange,
-        leadingIcon = {
+        trailingIcon = {
             Icon(
                 painter = painterResource(id = drawableId),
                 contentDescription = null,
